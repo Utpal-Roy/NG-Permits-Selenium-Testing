@@ -48,8 +48,7 @@ namespace AddNewProject
 
             //driver.FindElement(By.LinkText("Add New Permit")).Click();
             //or
-            string curURL = driver.Url;
-            string GoToURL = curURL.Replace(curURL.Split('/')[5].ToString(), "AddNewProject.aspx");
+            string GoToURL = RedirectToPage("AddNewProject.aspx");
             driver.Navigate().GoToUrl(GoToURL);
 
             WaitForOverLay(20000);
@@ -204,6 +203,18 @@ namespace AddNewProject
             Assert.AreEqual(expectedval, actualval);
         }
 
+        public string RedirectToPage(string PageName)
+        {
+            string retval = string.Empty;
+            string curURL = driver.Url.ToLower();
+            int a = curURL.IndexOf("home.aspx");
+            string b = curURL.Substring(a).ToLower();
+
+            string GoToURL = curURL.Replace(b, PageName.ToString());
+            retval = GoToURL;
+            return retval;
+
+        }
         public void ClickLinkByHref(String href)
         {
             //List<IWebElement> anchors = driver.FindElements(By.TagName("a"));

@@ -48,8 +48,7 @@ namespace AddNewInspectionTemplate
 
             WaitForOverLay(10000);
 
-            string curURL = driver.Url;
-            string GoToURL = curURL.Replace(curURL.Split('/')[5].ToString(), "InspectorInspectionsDetails.aspx");
+            string GoToURL = RedirectToPage("InspectorInspectionsDetails.aspx");
             driver.Navigate().GoToUrl(GoToURL);
 
             WaitForOverLay(20000);
@@ -152,16 +151,28 @@ namespace AddNewInspectionTemplate
 
             WaitForOverLay(10000);
 
-            string expectedval = "Project saved successfully";
+            string expectedval = "Inspection Template saved successfully";
             string actualval = string.Empty;
             //Can not Insert Duplicate Template!
             if (driver.FindElement(By.ClassName("swal-text")).GetAttribute("innerHTML").ToLower() == "values saved successfully!")
             {
                 driver.FindElement(By.XPath("//div[@class='swal-button-container']/button[.='OK']")).Click();
-                actualval = "Project saved successfully";
+                actualval = "Inspection Template saved successfully";
             }
 
             Assert.AreEqual(expectedval, actualval);
+
+        }
+        public string RedirectToPage(string PageName)
+        {
+            string retval = string.Empty;
+            string curURL = driver.Url.ToLower();
+            int a = curURL.IndexOf("home.aspx");
+            string b = curURL.Substring(a).ToLower();
+
+            string GoToURL = curURL.Replace(b, PageName.ToString());
+            retval = GoToURL;
+            return retval;
 
         }
         public void ClickLinkByHref(String href)

@@ -31,24 +31,20 @@ namespace AddNewPermits
 
             driver.Navigate().GoToUrl(appURL);
 
-            //driver.FindElement(By.Id("txtUserId")).SendKeys("Admin");
             driver.FindElement(By.Id("txtUserId")).SendKeys(AddNewPermitsData.Select("ID='txtUserId'")[0]["Value"].ToString());
 
-            //driver.FindElement(By.Id("txtUserPassword")).SendKeys("Arm714strong");
             driver.FindElement(By.Id("txtUserPassword")).SendKeys(AddNewPermitsData.Select("ID='txtUserPassword'")[0]["Value"].ToString());
 
             driver.FindElement(By.Id("btnLogin")).Click();
 
             WaitForOverLay(10000);
 
-            string curURL = driver.Url;
-            string GoToURL = curURL.Replace(curURL.Split('/')[5].ToString(), "AddNewPermits.aspx");
+            string GoToURL = RedirectToPage("AddNewPermits.aspx");
             driver.Navigate().GoToUrl(GoToURL);
 
             WaitForOverLay(20000);
             ////////////////////////////////////////////////////////////////
 
-            // 10 | click | id=ProductLookup | 
             IWebElement ProductLookupwebElement = driver.FindElement(By.Id("ProductLookup"));
             IJavaScriptExecutor ProductLookupexecutor = (IJavaScriptExecutor)driver;
             ProductLookupexecutor.ExecuteScript("arguments[0].click();", ProductLookupwebElement);
@@ -816,15 +812,28 @@ namespace AddNewPermits
 
             WaitForOverLay(10000);
 
-            string expectedval = "Project saved successfully";
+            string expectedval = "Permit saved successfully";
             string actualval = string.Empty;
             if (driver.FindElement(By.ClassName("swal-text")).GetAttribute("innerHTML").ToLower() == "values saved successfully!")
             {
                 driver.FindElement(By.XPath("//div[@class='swal-button-container']/button[.='OK']")).Click();
-                actualval = "Project saved successfully";
+                actualval = "Permit saved successfully";
             }
 
             Assert.AreEqual(expectedval, actualval);
+        }
+
+        public string RedirectToPage(string PageName)
+        {
+            string retval = string.Empty;
+            string curURL = driver.Url.ToLower();
+            int a = curURL.IndexOf("home.aspx");
+            string b = curURL.Substring(a).ToLower();
+
+            string GoToURL = curURL.Replace(b, PageName.ToString());
+            retval = GoToURL;
+            return retval;
+
         }
 
         public void ClickLinkByHref(String href)
@@ -922,7 +931,6 @@ namespace AddNewPermits
             {
                 //Createopenxmlreader via ExcelReaderFactory
                 IExcelDataReader excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
-                //DataSet result = excelReader.AsDataSet
                 //Return as DataSet and Set the First Row as Column Name
                 DataSet result = excelReader.AsDataSet(new ExcelDataSetConfiguration()
                 {
